@@ -1,0 +1,23 @@
+using .sysNeo:
+
+~ clear:
+
+var, name, 'charlie':
+var, age, '15':
+    var, test, 'true':
+
+push, 'this is your name':
+push, *name:
+
+push, 'this is your age':
+push, *age:
+
+> if, *test...
+    ^push, 'this is if!':
+    ^push, 'this is also if!':
+< else...
+    /push, 'this is else!':
+
+input:
+
+clear:

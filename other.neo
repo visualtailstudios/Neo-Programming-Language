@@ -1,0 +1,7 @@
+using .sysNeo:
+
+push, 'this is printing to the console':
+
+push, 'this is clearing the console after set input':
+
+clear:

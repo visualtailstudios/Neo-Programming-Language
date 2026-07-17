@@ -1,0 +1,158 @@
+import sys, os
+
+class Neo:
+    variables = []
+    functions = []
+    FROM_PARSE = False
+    true_readable = False
+    else_readable = False
+    entry_true_readable = False
+    entry_else_readable = False
+    def main(args):
+        if Neo.FindUsage(args[0]):
+            os.system('cls' if os.name == 'nt' else 'clear')
+            Neo.IndexCommands(args[0])
+        else:
+            Neo.ErrorHandling.LexerError()
+    def FindUsage(file_path):
+        lines = open(file_path, "r").readlines()
+        for l in lines:
+            if 'using .sysNeo:' in l:
+                print('Starting. . .')
+                return True
+        print('Usage not found.')
+        return False
+    def IndexCommands(file_path):
+        linesOfScripts = open(file_path, 'r').readlines()
+        for ToParse in linesOfScripts:
+            Neo.ParserHandling.IndentifyListing(ToParse)
+    def ParseInRelationTo(toParse, restParse, forParse, whichParse):
+        if forParse == 'var':
+            for entry in whichParse:
+                if entry.startswith(f"{toParse}:"):
+                    return entry.split(":", 1)[1]
+            return None
+        if forParse == 'bool':
+            for entry in whichParse:
+                if entry.startswith(f"{toParse}:"):
+                    value = entry.split(":", 1)[1].strip()
+                    if value == "true":
+                        Neo.FROM_PARSE = True
+                        Neo.true_readable = True
+                        Neo.else_readable = False
+                        return 'true'
+                    else:
+                        Neo.FROM_PARSE = False
+                        Neo.true_readable = False
+                        Neo.else_readable = True
+                        return 'false'
+            Neo.FROM_PARSE = False
+            Neo.true_readable = False
+            Neo.else_readable = True
+            return 'false'
+
+    def ParseForContinuationOfFindFunction(nameOfFunction, paramsOfFunction, forCallOrForDefinition):
+        ...
+    def CheckForContinuationOfFind(entry):
+        if '^' in entry and not Neo.entry_true_readable:
+            ...
+        elif '^' in entry and Neo.entry_true_readable:
+            newEntry = entry.replace('^', '')
+            return newEntry
+        if '/' in entry and not Neo.entry_else_readable:
+            ...
+        elif '/' in entry and Neo.entry_else_readable:
+            newEntry = entry.replace('/', '')
+            return newEntry
+        if '>' in entry and Neo.true_readable:
+            newEntry = entry
+            return newEntry
+        elif '>' in entry and not Neo.true_readable:
+            ...
+        if '<' in entry and Neo.else_readable:
+            newEntry = entry
+            return newEntry
+        elif '<' in entry and not Neo.else_readable:
+            ...
+
+    class ParserHandling:
+        def IndentifyListing(currentLine):
+            cleaned_line = currentLine.rstrip('\n')
+            parts = [part.strip() for part in cleaned_line.split(',') if part.strip()]
+            for entry in parts:
+                if '~' in entry:
+                    return
+                if ';' in entry and Neo.FROM_FUNC == False:
+                    return
+                new_entry = Neo.CheckForContinuationOfFind(entry)
+                if(entry == 'push' or new_entry == 'push'):
+                    msg = (parts[entry.index(entry) + 1]).replace("'", '')
+                    if msg.startswith('*'):
+                        type = msg.replace(':', '')
+                        var_to_call = type.replace('*', '')
+                        msg = Neo.ParseInRelationTo(var_to_call, msg, 'var', Neo.variables)
+                        print(msg)
+                    else:
+                        msg = msg.replace(":", '')
+                        print(msg)
+                if(entry == 'var'):
+                    var_name = parts[entry.index(entry) + 1].replace(',', '')
+                    var_value = (parts[entry.index(entry) + 2].replace("'", '')).replace(':', '')
+                    Neo.variables.append(f'{var_name}:{var_value}')
+                if '>' in entry and not Neo.true_readable:                    
+                    parsing = parts[entry.index(entry) + 1].replace('...', '')
+                    if parsing.startswith('*'):
+                        type = parsing.replace(':', '')
+                        var_to_call = type.replace('*', '')
+                        parsing = Neo.ParseInRelationTo(var_to_call, parsing, 'bool', Neo.variables)
+                        if parsing == 'true':
+                            Neo.FROM_PARSE = True
+                            Neo.true_readable = True
+                            Neo.else_readable = False
+                            Neo.entry_true_readable = True
+                            Neo.entry_else_readable = False
+                        elif parsing == 'false':
+                            Neo.FROM_PARSE = False
+                            Neo.true_readable = False
+                            Neo.else_readable = True
+                            Neo.entry_true_readable = False
+                            Neo.entry_else_readable = True
+                if(entry == '> if' and not Neo.true_readable and Neo.FROM_PARSE):
+                    Neo.true_readable = True
+                    Neo.else_readable = False
+                    Neo.entry_true_readable = True
+                    Neo.entry_else_readable = False
+                if(entry == '< else...' and Neo.else_readable and not Neo.FROM_PARSE):
+                    Neo.true_readable = False
+                    Neo.else_readable = True
+                    Neo.entry_true_readable = False
+                    Neo.entry_else_readable = True
+                if(entry.replace(':', '') == 'clear'):
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                if(entry == 'input' or entry.replace(':', '') == 'input'):
+                    if len(parts) > 1:
+                        msg = (parts[entry.index(entry) + 1]).replace("'", '')
+                    else:
+                        msg = ''
+                    if msg.startswith('*'):
+                        type = msg.replace(':', '')
+                        var_to_call = type.replace('*', '')
+                        msg = Neo.ParseInRelationTo(var_to_call, msg, 'var', Neo.variables)
+                    if msg == '':
+                        inp = input()
+                        print(inp)
+                    else:
+                        print(msg, end='')
+                        inp = input()
+                        print(inp)
+
+
+
+
+    class ErrorHandling:
+        def LexerError():
+            print('Lexer error occurred.')
+
+
+
+Neo.main(sys.argv[1:])
