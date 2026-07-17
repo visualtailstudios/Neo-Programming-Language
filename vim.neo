@@ -1,10 +1,12 @@
 arr, lists, [
-    #push, 'arr list 2':
-    #push, 'arr list 1':
-    #var, test, '13':
+    push, 'arr list 2':
+    push, 'arr list 1':
+    var, test, '13':
 ]
 
 
 
 ~ func, nvim, [emulator, _lists], look;
-func, vim, [_lists], def;
+func, vim, [], 
+    push, 'function pushing':
+def;

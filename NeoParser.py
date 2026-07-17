@@ -6,7 +6,11 @@ import termios, tty
 class Neo:
     variables = []
     functions = []
+    arrays = []
     FROM_PARSE = False
+    LINES_OF_SCRIPT = []
+    INDEX_OF_I = 0
+    TO_PARSE = ''
     true_readable = False
     else_readable = False
     entry_true_readable = False
@@ -26,9 +30,12 @@ class Neo:
         print('Usage not found.')
         return False
     def IndexCommands(file_path):
-        linesOfScripts = open(file_path, 'r').readlines()
-        for ToParse in linesOfScripts:
-            Neo.ParserHandling.IndentifyListing(ToParse)
+        Neo.LINES_OF_SCRIPT = open(file_path, 'r').readlines()
+        Neo.INDEX_OF_I = 0
+        while Neo.INDEX_OF_I < len(Neo.LINES_OF_SCRIPT):
+            Neo.TO_PARSE = Neo.LINES_OF_SCRIPT(Neo.INDEX_OF_I)
+            Neo.ParserHandling.IndentifyListing(Neo.TO_PARSE)
+            Neo.INDEX_OF_I += 1
     def ParseInRelationTo(toParse, restParse, forParse, whichParse):
         if forParse == 'var':
             for entry in whichParse:
@@ -55,9 +62,27 @@ class Neo:
             return 'false'
 
     def ParseForContinuationOfFindFunction(nameOfFunction, paramsOfFunction, forCallOrForDefinition):
-        ...
-    def ParseForContinuationWithArrayIn(nameOfArray, countOfEntries, entries):
-        ...
+        i = Neo.INDEX_OF_I + 1
+        body = []
+        while i < len(Neo.LINES_OF_SCRIPT):
+            line = Neo.LINES_OF_SCRIPT[i]
+            if 'def;' in line:
+                break
+            body.append(line)
+            i += 1
+        Neo.functions.append({"name": nameOfFunction, "params": paramsOfFunction, "body": body})
+        Neo.INDEX_OF_I = i
+    def ParseForContinuationWithArrayIn(nameOfArray, forCallOrForDefinition):
+        i = Neo.INDEX_OF_I + 1
+        body = []
+        while i < len(Neo.LINES_OF_SCRIPT):
+            line = Neo.LINES_OF_SCRIPT[i]
+            if ']' in line:
+                break
+            body.append(line)
+            i += 1
+        Neo.arrays.append({"name": nameOfArray, "body": body})
+        Neo.INDEX_OF_I = i
     def CheckForContinuationOfFind(entry):
         if '^' in entry and not Neo.entry_true_readable:
             ...
@@ -148,9 +173,16 @@ class Neo:
                 if(entry == 'inp' or new_entry == 'inp'):
                     var_name = parts[entry.index(entry) + 1].replace(',', '')
                     Neo.variables.append(f'{var_name}:{Neo.vim.neo_input()}')
-                if(entry == 'func'):
-                    ...
                 if(entry == 'arr'):
+                    # currentLine is like: "arr, lists, ["
+                    cleaned = currentLine.replace("]", "")
+                    parts = [p.strip() for p in cleaned.split(',') if p.strip()]
+                    # expected: ["arr","lists","["] (or something like that)
+                    if len(parts) >= 2:
+                        arr_name = parts[1]
+                        Neo.ParseForContinuationWithArrayIn(arr_name, "def")
+                    return
+                if(entry == 'func'):
                     ...
 
 

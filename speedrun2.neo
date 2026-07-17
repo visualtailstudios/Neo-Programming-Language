@@ -1,0 +1,29 @@
+using .sysNeo:
+
+push, 'this is pushing':
+var, variable, '67':
+
+push, *variable:
+
+var, boolean, 'true':
+
+>if, *boolean...
+^push, 'it was true':
+<else...
+/push, 'it was false':
+
+input:
+
+push, 'the console will clear after this input':
+input:
+
+clear:
+
+push, 'whats ur name':
+inp, inputs, inp:
+
+push, 'wow ur name is':
+push, *inputs:
+
+input:
+clear:
