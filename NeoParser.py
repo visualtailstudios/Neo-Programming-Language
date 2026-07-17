@@ -56,6 +56,8 @@ class Neo:
 
     def ParseForContinuationOfFindFunction(nameOfFunction, paramsOfFunction, forCallOrForDefinition):
         ...
+    def ParseForContinuationWithArrayIn(nameOfArray, countOfEntries, entries):
+        ...
     def CheckForContinuationOfFind(entry):
         if '^' in entry and not Neo.entry_true_readable:
             ...
@@ -146,6 +148,10 @@ class Neo:
                 if(entry == 'inp' or new_entry == 'inp'):
                     var_name = parts[entry.index(entry) + 1].replace(',', '')
                     Neo.variables.append(f'{var_name}:{Neo.vim.neo_input()}')
+                if(entry == 'func'):
+                    ...
+                if(entry == 'arr'):
+                    ...
 
 
     class vim:
@@ -187,6 +193,9 @@ class Neo:
             sys.stdout.write("\n")
             sys.stdout.flush()
             return "".join(buf)
+        def nvim(emulator, arr):
+            ...
+
 
 
     class ErrorHandling:
