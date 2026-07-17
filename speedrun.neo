@@ -1,0 +1,36 @@
+using .sysNeo:
+
+push, 'this is a push cmd':
+var, variable, '12':
+
+push, *variable:
+
+push, 'that was a variable':
+
+input:
+
+push, 'enter a name':
+inp, name, inp:
+
+push, 'your name is':
+push, *name:
+
+push, 'enter a bool':
+
+inp, boolean, inp:
+
+>if, *boolean...
+    ^push, 'the boolean was true':
+    ^input:
+<else...
+    /push, 'the boolean was false':
+    /input:
+
+push, 'the console will clear after this command':
+input:
+
+
+clear:
+
+~ this is a comment
+~ it will not be read

@@ -1,10 +1,8 @@
 using .sysNeo:
 
-~ clear:
-
 var, name, 'charlie':
 var, age, '15':
-    var, test, 'true':
+    var, test, 'false':
 
 push, 'this is your name':
 push, *name:
@@ -13,11 +11,16 @@ push, 'this is your age':
 push, *age:
 
 > if, *test...
-    ^push, 'this is if!':
-    ^push, 'this is also if!':
+    ^clear:
 < else...
-    /push, 'this is else!':
+    /push, 'the console will not be cleared':
+    /input:
+    /var, group, 'true':
 
-input:
+> if, *group...
+    ^clear:
+    ^push, 'group was cleared':
+< else...
+    /push, *age:
 
-clear:
+

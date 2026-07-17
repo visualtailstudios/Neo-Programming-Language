@@ -1,4 +1,5 @@
 import sys, os
+import termios, tty
 
 class Neo:
     variables = []
@@ -82,8 +83,6 @@ class Neo:
             for entry in parts:
                 if '~' in entry:
                     return
-                if ';' in entry and Neo.FROM_FUNC == False:
-                    return
                 new_entry = Neo.CheckForContinuationOfFind(entry)
                 if(entry == 'push' or new_entry == 'push'):
                     msg = (parts[entry.index(entry) + 1]).replace("'", '')
@@ -95,7 +94,7 @@ class Neo:
                     else:
                         msg = msg.replace(":", '')
                         print(msg)
-                if(entry == 'var'):
+                if entry == 'var' or new_entry == 'var':
                     var_name = parts[entry.index(entry) + 1].replace(',', '')
                     var_value = (parts[entry.index(entry) + 2].replace("'", '')).replace(':', '')
                     Neo.variables.append(f'{var_name}:{var_value}')
@@ -127,9 +126,9 @@ class Neo:
                     Neo.else_readable = True
                     Neo.entry_true_readable = False
                     Neo.entry_else_readable = True
-                if(entry.replace(':', '') == 'clear'):
+                if(entry.replace(':', '') == 'clear') or new_entry == 'clear:':
                     os.system('cls' if os.name == 'nt' else 'clear')
-                if(entry == 'input' or entry.replace(':', '') == 'input'):
+                if(entry == 'input' or entry.replace(':', '') == 'input') or new_entry == 'input:':
                     if len(parts) > 1:
                         msg = (parts[entry.index(entry) + 1]).replace("'", '')
                     else:
@@ -139,14 +138,53 @@ class Neo:
                         var_to_call = type.replace('*', '')
                         msg = Neo.ParseInRelationTo(var_to_call, msg, 'var', Neo.variables)
                     if msg == '':
-                        inp = input()
-                        print(inp)
+                        inp = Neo.vim.neo_input()
                     else:
-                        print(msg, end='')
-                        inp = input()
-                        print(inp)
+                        inp = Neo.vim.neo_input(prompt=msg)
+                if(entry == 'inp' or new_entry == 'inp'):
+                    var_name = parts[entry.index(entry) + 1].replace(',', '')
+                    Neo.variables.append(f'{var_name}:{Neo.vim.neo_input()}')
 
 
+    class vim:
+        def neo_input(prompt=""):
+            sys.stdout.write(prompt)
+            sys.stdout.flush()
+            fd = sys.stdin.fileno()
+            old = termios.tcgetattr(fd)
+            prompt_len = len(prompt)
+            buf = []
+            shown = 0
+            try:
+                tty.setraw(fd)
+                while True:
+                    ch = sys.stdin.read(1)
+                    if ch in ("\n", "\r"):
+                        break
+                    if ch in ("\x7f", "\b"):
+                        if buf:
+                            buf.pop()
+                            shown -= 1
+                            sys.stdout.write("\b \b")
+                            sys.stdout.flush()
+                        continue
+                    if ch == "\x03":
+                        raise KeyboardInterrupt
+                    buf.append(ch)
+                    shown += 1
+                    sys.stdout.write(ch)
+                    sys.stdout.flush()
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old)
+            total = prompt_len + shown
+            if total > 0:
+                sys.stdout.write("\b" * total)
+                sys.stdout.write(" " * total)
+                sys.stdout.write("\b" * total)
+                sys.stdout.flush()
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+            return "".join(buf)
 
 
     class ErrorHandling:

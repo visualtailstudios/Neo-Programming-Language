@@ -1,0 +1,17 @@
+using .sysNeo:
+
+~ menu
+push, 'Welcome to the game!':
+push, '':
+push, '1. start game':
+inp, will_start, inp:
+
+> if, *will_start...
+    ^push, 'this is more input testing':
+    ^push, 'please only input true or false':
+    ^inp, to_then, inp:
+
+    ^push, *to_then:
+< else...
+    /push, 'bye bye':
+    /input:

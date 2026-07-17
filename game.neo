@@ -1,0 +1,23 @@
+using .sysNeo:
+
+push, 'Welcome to the game!':
+push, ' ':
+push, '1. Start Game':
+
+input:
+var, start, 'false':
+
+> if, *start...
+    ^clear:
+    ^push, 'so far you cannot set var into inputs.':
+    input:
+    var, cont, 'false':
+    > if, *cont...
+        ^clear:
+        ^push, 'i wish i could tho':
+    < else...
+        /push, 'but it still is really cool':
+
+< else...
+    /clear:
+    /push, 'this is so awsome':

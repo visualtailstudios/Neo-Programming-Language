@@ -1,0 +1,8 @@
+using .sysNeo:
+
+inp, game, inp:
+
+> if, *game...
+^push, 'cray':
+< else...
+/push, 'not crazy':

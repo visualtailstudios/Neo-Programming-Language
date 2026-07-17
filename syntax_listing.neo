@@ -1,0 +1,36 @@
+~ you must have this somewhere in the file
+using .sysNeo:
+
+push, 'this is a push cmd!':
+
+var, variable, '12':
+
+push, *variable:
+
+push, 'that was a variable':
+
+push, '':
+
+push, 'what is your name?':
+inp, name, inp:
+
+push, 'your name is':
+push, *name:
+
+
+push, 'enter a bool - true or false':
+inp, boolean, inp:
+
+>if, *boolean...
+    ^push, 'the boolean was true':
+    ^input:
+<else...
+    /push, 'the boolean was false':
+    /input:
+
+push, 'the console will clear after this input':
+input:
+clear:
+
+~ this is a comment
+~ push, 'this command will not be pushed':
